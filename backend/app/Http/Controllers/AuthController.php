@@ -211,6 +211,7 @@ class AuthController extends Controller
         ]));
 
         return $this->success($profile->load('university'), '更新成功');
+    }
 
     // 邮箱注册
     public function emailRegister(Request $request)
