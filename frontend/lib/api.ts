@@ -8,7 +8,7 @@ export const apiClient = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  withCredentials: true,
+  withCredentials: false,
 });
 
 // Request interceptor to add auth token
@@ -29,6 +29,11 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
+    // Handle 422 validation errors properly
+    if (error.response?.status === 422) {
+      return Promise.reject(error);
+    }
+    
     if (error.response?.status === 401) {
       // Clear auth data and redirect to login
       localStorage.removeItem('auth_token');

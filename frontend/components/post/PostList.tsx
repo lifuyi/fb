@@ -46,9 +46,11 @@ export default function PostList({ groupId }: PostListProps) {
 
   return (
     <div className="space-y-4">
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
-      ))}
+      {posts.map((post) => 
+        post && post.id ? (
+          <PostCard key={post.id} post={post} />
+        ) : null
+      )}
 
       {/* Infinite scroll trigger */}
       {hasNextPage && (

@@ -50,7 +50,7 @@ export default function CreatePost({ groupId }: CreatePostProps) {
   return (
     <Card className="p-4 mb-4">
       <div className="flex gap-3">
-        <Avatar src={user?.avatar} size="md" />
+        <Avatar src={user?.profile?.avatar_url} size="md" />
         
         <div className="flex-1">
           <Textarea

@@ -78,7 +78,7 @@ export function usePosts(groupId?: number) {
     },
   });
 
-  const posts = data?.pages.flatMap((page) => page.data) ?? [];
+  const posts = data?.pages.flatMap((page) => page.data || []) ?? [];
 
   return {
     posts,

@@ -73,6 +73,7 @@ export default function RegisterPage() {
       // Redirect to feed
       router.push('/feed');
     } catch (error) {
+      console.error('Registration error:', error);
       setRegisterError(handleApiError(error));
     } finally {
       setIsRegistering(false);

@@ -1,10 +1,10 @@
 // User Types
 export interface User {
   id: number;
-  username: string;
   email: string;
-  phone?: string;
-  avatar?: string;
+  status: number;
+  last_login_at: string;
+  last_login_ip: string;
   created_at: string;
   updated_at: string;
   profile?: UserProfile;
@@ -14,18 +14,17 @@ export interface UserProfile {
   id: number;
   user_id: number;
   nickname?: string;
+  avatar_url?: string;
   bio?: string;
-  gender?: 'male' | 'female' | 'other';
-  birth_date?: string;
+  gender: number;
+  birth_year?: number;
   university_id?: number;
   major?: string;
-  year?: number;
-  graduation_date?: string;
-  skills?: string[];
-  interests?: string[];
-  wechat_id?: string;
-  is_verified: boolean;
-  verification_status?: 'pending' | 'approved' | 'rejected';
+  graduation_year?: number;
+  skills?: string;
+  created_at: string;
+  updated_at: string;
+  university?: any;
 }
 
 // Auth Types
