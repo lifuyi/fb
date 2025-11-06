@@ -18,4 +18,4 @@ echo "访问地址: http://localhost:8000"
 echo "按 Ctrl+C 停止服务"
 echo ""
 
-php artisan serve --host=0.0.0.0 --port=8000
+/opt/homebrew/opt/php@8.1/bin/php artisan serve --host=0.0.0.0 --port=8000
