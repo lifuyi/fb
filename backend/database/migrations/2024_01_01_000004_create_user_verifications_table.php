@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('user_verifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->tinyInteger('type')->comment('1:学生证 2:邮箱 3:实名');
             $table->tinyInteger('status')->default(0)->comment('0:待审核 1:已通过 2:已拒绝');
             $table->json('data')->nullable()->comment('验证相关数据');

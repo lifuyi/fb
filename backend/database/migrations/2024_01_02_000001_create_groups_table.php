@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('avatar_url', 500)->nullable()->comment('群组头像');
             $table->tinyInteger('type')->default(0)->comment('0:公开 1:私有 2:官方');
             $table->foreignId('owner_id')->constrained('users')->comment('群主ID');
-            $table->foreignId('university_id')->nullable()->constrained()->comment('大学ID');
+            $table->foreignId('university_id')->nullable()->constrained('universities')->comment('大学ID');
             $table->string('tags')->nullable()->comment('标签，逗号分隔');
             $table->integer('member_count')->default(0)->comment('成员数量');
             $table->integer('post_count')->default(0)->comment('帖子数量');

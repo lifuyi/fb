@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('group_members', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('group_id')->constrained()->onDelete('cascade');
+            $table->foreignId('group_id')->constrained('groups')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->tinyInteger('role')->default(0)->comment('0:成员 1:管理员 2:群主');
             $table->text('remark')->nullable()->comment('备注');
