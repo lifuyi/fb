@@ -8,6 +8,11 @@ use App\Http\Controllers\PostController;
 
 // 认证相关路由
 Route::prefix('auth')->group(function () {
+    // 邮箱注册
+    Route::post('email-register', [AuthController::class, 'emailRegister']);
+    
+    // 手机号注册
+    Route::post('phone-register', [AuthController::class, 'phoneRegister']);
     // 微信登录
     Route::post('wechat-login', [AuthController::class, 'wechatLogin']);
     

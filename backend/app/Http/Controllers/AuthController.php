@@ -211,5 +211,82 @@ class AuthController extends Controller
         ]));
 
         return $this->success($profile->load('university'), '更新成功');
+
+    // 邮箱注册
+    public function emailRegister(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|max:128|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'nickname' => 'required|string|max:50',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->error('参数错误', 422, $validator->errors());
+        }
+
+        // 创建用户
+        $user = User::create([
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'status' => 0,
+            'last_login_at' => now(),
+            'last_login_ip' => $request->ip(),
+        ]);
+
+        // 创建用户资料
+        UserProfile::create([
+            'user_id' => $user->id,
+            'nickname' => $request->nickname,
+        ]);
+
+        // 创建token
+        $token = $user->createToken('api')->plainTextToken;
+
+        return $this->success([
+            'user' => $user->load('profile.university'),
+            'token' => $token,
+        ], '注册成功');
+    }
+
+    // 手机号注册
+    public function phoneRegister(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required|string|regex:/^1[3-9]\d{9}$/|unique:users,phone',
+            'code' => 'required|string|size:6',
+            'nickname' => 'required|string|max:50',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->error('参数错误', 422, $validator->errors());
+        }
+
+        // TODO: 验证短信验证码
+        // if (!$this->verifySmsCode($request->phone, $request->code)) {
+        //     return $this->error('验证码错误');
+        // }
+
+        // 创建用户
+        $user = User::create([
+            'phone' => $request->phone,
+            'status' => 0,
+            'last_login_at' => now(),
+            'last_login_ip' => $request->ip(),
+        ]);
+
+        // 创建用户资料
+        UserProfile::create([
+            'user_id' => $user->id,
+            'nickname' => $request->nickname,
+        ]);
+
+        // 创建token
+        $token = $user->createToken('api')->plainTextToken;
+
+        return $this->success([
+            'user' => $user->load('profile.university'),
+            'token' => $token,
+        ], '注册成功');
     }
 }
