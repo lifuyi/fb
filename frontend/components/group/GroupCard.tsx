@@ -17,6 +17,10 @@ export default function GroupCard({ group }: GroupCardProps) {
 
   const handleToggleMembership = () => {
     if (group.is_member) {
+      if (group.member_role === 'owner') {
+        alert('群主不能退出群组');
+        return;
+      }
       if (confirm('确定要退出这个群组吗？')) {
         leaveGroup(group.id);
       }
@@ -67,8 +71,9 @@ export default function GroupCard({ group }: GroupCardProps) {
           size="sm"
           onClick={handleToggleMembership}
           className="ml-auto"
+          disabled={group.member_role === 'owner'}
         >
-          {group.is_member ? '已加入' : '加入群组'}
+          {group.member_role === 'owner' ? '群主' : group.is_member ? '已加入' : '加入群组'}
         </Button>
       </div>
     </Card>
