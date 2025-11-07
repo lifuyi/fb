@@ -27,6 +27,8 @@ export function usePosts(groupId?: number) {
     mutationFn: (postData: CreatePostData) => postService.createPost(postData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['posts', undefined] });
+      queryClient.invalidateQueries({ queryKey: ['posts', 1] }); // Also invalidate group 1 feed
     },
   });
 
@@ -34,6 +36,8 @@ export function usePosts(groupId?: number) {
     mutationFn: (postId: number) => postService.deletePost(postId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['posts', undefined] });
+      queryClient.invalidateQueries({ queryKey: ['posts', 1] });
     },
   });
 
@@ -75,6 +79,8 @@ export function usePosts(groupId?: number) {
       postService.addComment(postId, commentData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['posts', undefined] });
+      queryClient.invalidateQueries({ queryKey: ['posts', 1] });
     },
   });
 
