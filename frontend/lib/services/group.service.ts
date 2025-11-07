@@ -15,7 +15,15 @@ export const groupService = {
       '/groups',
       { params: { page } }
     );
-    return data.data;
+    // Transform Laravel paginated response to expected format
+    const apiData = data.data;
+    return {
+      data: apiData.list || [],
+      current_page: apiData.pagination?.page || page,
+      last_page: apiData.pagination?.pages || 1,
+      per_page: apiData.pagination?.size || 10,
+      total: apiData.pagination?.total || 0,
+    };
   },
 
   // Get single group
