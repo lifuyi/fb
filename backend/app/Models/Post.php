@@ -52,7 +52,7 @@ class Post extends Model
     // 关联点赞
     public function likes()
     {
-        return $this->morphMany(Like::class, 'targetable');
+        return $this->hasMany(Like::class, 'target_id')->where('target_type', 1);
     }
 
     // 获取点赞用户

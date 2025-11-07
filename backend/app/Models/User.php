@@ -44,6 +44,72 @@ class User extends Authenticatable
         return $this->hasMany(UserVerification::class);
     }
 
+    // 关联群组成员
+    public function groupMembers()
+    {
+        return $this->hasMany(GroupMember::class);
+    }
+
+    // 关联加入的群组
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_members', 'user_id', 'group_id')
+            ->withPivot(['role', 'status', 'joined_at'])
+            ->withTimestamps();
+    }
+
+    // 关注的用户
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')
+            ->withTimestamps();
+    }
+
+    // 关注者
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
+            ->withTimestamps();
+    }
+
+    // 通知
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    // 检查是否关注了某用户
+    public function isFollowing($userId)
+    {
+        return $this->following()->where('following_id', $userId)->exists();
+    }
+
+    // 关注用户
+    public function follow($userId)
+    {
+        if (!$this->isFollowing($userId) && $this->id !== $userId) {
+            $this->following()->attach($userId);
+            
+            // 创建通知
+            Notification::create([
+                'user_id' => $userId,
+                'type' => 3,
+                'title' => '新关注',
+                'content' => $this->profile->nickname . ' 关注了你',
+                'data' => ['follower_id' => $this->id],
+            ]);
+            
+            return true;
+        }
+        return false;
+    }
+
+    // 取消关注
+    public function unfollow($userId)
+    {
+        return $this->following()->detach($userId);
+    }
+
     // 检查是否已验证
     public function isVerified()
     {

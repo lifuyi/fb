@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
-import { Search, Bell, Moon, Sun, Menu } from 'lucide-react';
+import { Search, Moon, Sun, Menu } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import Button from '../ui/Button';
+import NotificationBell from '../notification/NotificationBell';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useState } from 'react';
 
@@ -70,15 +71,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
           {isAuthenticated ? (
             <>
               {/* Notifications */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative"
-                >
-                  <Bell className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                  <span className="absolute top-1 right-1 h-2 w-2 bg-primary-600 rounded-full" />
-                </button>
-              </div>
+              <NotificationBell />
 
               {/* User Avatar */}
               <Link href="/profile">

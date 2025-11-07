@@ -21,10 +21,47 @@ export interface UserProfile {
   university_id?: number;
   major?: string;
   graduation_year?: number;
-  skills?: string;
+  skills?: string[];
   created_at: string;
   updated_at: string;
-  university?: any;
+  university?: University;
+}
+
+export interface University {
+  id: number;
+  name: string;
+  domain: string;
+  province: string;
+  city: string;
+  address?: string;
+  latitude?: string;
+  longitude?: string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProfileStats {
+  posts_count: number;
+  groups_count: number;
+  followers_count: number;
+  following_count: number;
+}
+
+export interface ProfileData {
+  user: User;
+  stats: ProfileStats;
+}
+
+export interface UpdateProfileData {
+  nickname?: string;
+  bio?: string;
+  gender?: number;
+  birth_year?: number;
+  university_id?: number;
+  major?: string;
+  graduation_year?: number;
+  skills?: string[];
 }
 
 // Auth Types
@@ -110,10 +147,19 @@ export interface Friend {
 export interface Notification {
   id: number;
   user_id: number;
-  type: 'like' | 'comment' | 'follow' | 'friend_request' | 'system';
+  type: 1 | 2 | 3 | 4; // 1:点赞 2:评论 3:关注 4:系统通知
   title: string;
   content: string;
   data?: Record<string, any>;
   is_read: boolean;
   created_at: string;
+}
+
+// Follow Types
+export interface Follow {
+  id: number;
+  follower_id: number;
+  following_id: number;
+  created_at: string;
+  updated_at: string;
 }

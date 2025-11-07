@@ -1,27 +1,26 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import MainLayout from '@/components/layout/MainLayout';
 import ProfileHeader from '@/components/profile/ProfileHeader';
 import ProfileTabs from '@/components/profile/ProfileTabs';
-import EditProfileModal from '@/components/profile/EditProfileModal';
 import PostList from '@/components/post/PostList';
 import GroupList from '@/components/group/GroupList';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useProfile, useProfilePosts, useProfileGroups } from '@/lib/hooks/useProfile';
-import { profileService } from '@/lib/services/profile.service';
-import { UpdateProfileData } from '@/lib/types';
 
-export default function ProfilePage() {
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+export default function UserProfilePage() {
+  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'posts' | 'groups'>('posts');
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const params = useParams();
+  const userId = params.id ? parseInt(params.id as string) : undefined;
 
-  const { profile, isLoading: profileLoading, error: profileError, refetch: refetchProfile } = useProfile();
-  const { posts, isLoading: postsLoading, refetch: refetchPosts } = useProfilePosts();
-  const { groups, isLoading: groupsLoading, refetch: refetchGroups } = useProfileGroups();
+  const [activeTab, setActiveTab] = useState<'posts' | 'groups'>('posts');
+
+  const { profile, isLoading: profileLoading, error: profileError } = useProfile(userId);
+  const { posts, isLoading: postsLoading, refetch: refetchPosts } = useProfilePosts(userId);
+  const { groups, isLoading: groupsLoading } = useProfileGroups(userId);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -29,10 +28,12 @@ export default function ProfilePage() {
     }
   }, [isAuthenticated, authLoading, router]);
 
-  const handleSaveProfile = async (data: UpdateProfileData) => {
-    await profileService.updateProfile(data);
-    await refetchProfile();
-  };
+  // Redirect to own profile if viewing self
+  useEffect(() => {
+    if (user && userId === user.id) {
+      router.push('/profile');
+    }
+  }, [user, userId, router]);
 
   if (authLoading || profileLoading) {
     return (
@@ -61,8 +62,7 @@ export default function ProfilePage() {
       <div className="space-y-6">
         <ProfileHeader 
           profile={profile} 
-          isOwnProfile={true}
-          onEdit={() => setIsEditModalOpen(true)}
+          isOwnProfile={false}
         />
 
         <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
@@ -99,13 +99,6 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
-
-      <EditProfileModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        profile={profile.user.profile}
-        onSave={handleSaveProfile}
-      />
     </MainLayout>
   );
 }
