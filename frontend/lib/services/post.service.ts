@@ -27,11 +27,11 @@ export const postService = {
     // Transform Laravel paginated response to expected format
     const apiData = data.data;
     return {
-      data: apiData.list || [],
-      current_page: apiData.pagination?.page || page,
-      last_page: apiData.pagination?.pages || 1,
-      per_page: apiData.pagination?.size || 10,
-      total: apiData.pagination?.total || 0,
+      data: apiData.data || [],
+      current_page: apiData.current_page || page,
+      last_page: apiData.last_page || 1,
+      per_page: apiData.per_page || 10,
+      total: apiData.total || 0,
     };
   },
 

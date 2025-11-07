@@ -25,7 +25,7 @@ export default function CreatePost({ groupId }: CreatePostProps) {
     createPost({
       content: content.trim(),
       images: images.length > 0 ? images : undefined,
-      group_id: groupId,
+      group_id: groupId || 1, // Default to group ID 1 if no groupId provided
       type: images.length > 0 ? 'image' : 'text',
     });
 
