@@ -19,11 +19,20 @@ export const postService = {
     const params: any = { page };
     if (groupId) params.group_id = groupId;
     
-    const { data } = await apiClient.get<ApiResponse<PaginatedResponse<Post>>>(
+    const { data } = await apiClient.get(
       '/posts',
       { params }
     );
-    return data.data;
+    
+    // Transform Laravel paginated response to expected format
+    const apiData = data.data;
+    return {
+      data: apiData.list || [],
+      current_page: apiData.pagination?.page || page,
+      last_page: apiData.pagination?.pages || 1,
+      per_page: apiData.pagination?.size || 10,
+      total: apiData.pagination?.total || 0,
+    };
   },
 
   // Get single post

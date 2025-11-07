@@ -75,7 +75,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
               {/* User Avatar */}
               <Link href="/profile">
-                <Avatar src={user?.avatar} size="md" />
+                <Avatar src={user?.profile?.avatar_url} size="md" />
               </Link>
             </>
           ) : (
