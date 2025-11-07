@@ -41,7 +41,10 @@ export default function CreateGroupModal({ isOpen, onClose }: CreateGroupModalPr
   const groupType = watch('type');
 
   const onSubmit = (data: CreateGroupFormData) => {
-    createGroup(data, {
+    createGroup({
+      ...data,
+      type: data.type === 'public' ? 0 : 1, // Convert to integer: 0=public, 1=private
+    }, {
       onSuccess: () => {
         reset();
         onClose();

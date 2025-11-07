@@ -5,7 +5,7 @@ export interface CreatePostData {
   content: string;
   images?: string[];
   group_id?: number;
-  type?: 'text' | 'image';
+  type?: 0 | 1 | 2; // 0: text, 1: image, 2: link
 }
 
 export interface CreateCommentData {

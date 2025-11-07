@@ -5,7 +5,7 @@ export interface CreateGroupData {
   name: string;
   description?: string;
   avatar?: string;
-  type: 'public' | 'private';
+  type: 0 | 1 | 2; // 0: public, 1: private, 2: secret
 }
 
 export const groupService = {
