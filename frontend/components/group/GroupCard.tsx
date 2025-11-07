@@ -1,12 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { Users, Lock, Globe } from 'lucide-react';
+import { Users, Lock, Globe, Settings } from 'lucide-react';
 import Card from '../ui/Card';
 import Avatar from '../ui/Avatar';
 import Button from '../ui/Button';
 import { Group } from '@/lib/types';
 import { useGroups } from '@/lib/hooks/useGroups';
+import GroupSettingsModal from './GroupSettingsModal';
 
 interface GroupCardProps {
   group: Group;
@@ -14,6 +16,7 @@ interface GroupCardProps {
 
 export default function GroupCard({ group }: GroupCardProps) {
   const { joinGroup, leaveGroup } = useGroups();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const handleToggleMembership = () => {
     if (group.is_member) {
@@ -60,11 +63,28 @@ export default function GroupCard({ group }: GroupCardProps) {
       )}
 
       <div className="flex items-center justify-between">
-        {group.member_role && (
-          <span className="text-xs px-2 py-1 rounded-full bg-primary-100 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400">
-            {group.member_role === 'owner' ? '群主' : group.member_role === 'admin' ? '管理员' : '成员'}
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {group.member_role && (
+            <span className="text-xs px-2 py-1 rounded-full bg-primary-100 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400">
+              {group.member_role === 'owner' ? '群主' : group.member_role === 'admin' ? '管理员' : '成员'}
+            </span>
+          )}
+          
+          {group.member_role === 'owner' && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsSettingsOpen(true);
+              }}
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
         
         <Button
           variant={group.is_member ? 'outline' : 'primary'}
@@ -76,6 +96,13 @@ export default function GroupCard({ group }: GroupCardProps) {
           {group.member_role === 'owner' ? '群主' : group.is_member ? '已加入' : '加入群组'}
         </Button>
       </div>
+
+      {/* Settings Modal */}
+      <GroupSettingsModal
+        group={group}
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
     </Card>
   );
 }

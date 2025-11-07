@@ -30,6 +30,21 @@ export function useGroups() {
     },
   });
 
+  const updateGroupMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<CreateGroupData> }) =>
+      groupService.updateGroup(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['groups'] });
+    },
+  });
+
+  const deleteGroupMutation = useMutation({
+    mutationFn: (groupId: number) => groupService.deleteGroup(groupId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['groups'] });
+    },
+  });
+
   return {
     groups: groupsData?.data ?? [],
     isLoading,
@@ -37,6 +52,8 @@ export function useGroups() {
     createGroup: createGroupMutation.mutate,
     joinGroup: joinGroupMutation.mutate,
     leaveGroup: leaveGroupMutation.mutate,
+    updateGroup: (id: number, data: Partial<CreateGroupData>) => updateGroupMutation.mutate({ id, data }),
+    deleteGroup: deleteGroupMutation.mutate,
     isCreatingGroup: createGroupMutation.isPending,
   };
 }

@@ -151,8 +151,8 @@ class GroupController extends Controller
             return $this->error('群组不存在', 404);
         }
 
-        // 检查权限
-        if (!$request->user()->can('manage-post', $group)) {
+        // 检查权限 - 只有群主可以更新群组信息
+        if ($group->owner_id !== $request->user()->id) {
             return $this->error('无权限操作', 403);
         }
 
