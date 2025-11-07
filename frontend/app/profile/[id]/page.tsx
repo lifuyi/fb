@@ -74,7 +74,7 @@ export default function UserProfilePage() {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-700"></div>
               </div>
             ) : posts.length > 0 ? (
-              <PostList posts={posts} onPostDeleted={refetchPosts} />
+              <PostList userId={profile.user.id} />
             ) : (
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 text-center">
                 <p className="text-gray-600 dark:text-gray-400">还没有发布任何帖子</p>
@@ -90,7 +90,7 @@ export default function UserProfilePage() {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-700"></div>
               </div>
             ) : groups.length > 0 ? (
-              <GroupList groups={groups} />
+              <GroupList />
             ) : (
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 text-center">
                 <p className="text-gray-600 dark:text-gray-400">还没有加入任何群组</p>
