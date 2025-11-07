@@ -101,6 +101,16 @@ class GroupController extends Controller
         $size = $request->size ?? 20;
         $groups = $query->paginate($size, ['*'], 'page', $page);
 
+        // 添加当前用户成员状态
+        $user = Auth::user();
+        if ($user) {
+            $groups->getCollection()->each(function ($group) use ($user) {
+                $member = $group->members()->where('user_id', $user->id)->first();
+                $group->is_member = $member ? true : false;
+                $group->member_role = $member ? $this->getRoleName($member->role) : null;
+            });
+        }
+
         return $this->paginate($groups);
     }
 
@@ -116,11 +126,18 @@ class GroupController extends Controller
         }
 
         // 检查是否是私有群组
+        $user = Auth::user();
         if ($group->type === 1) {
-            $user = Auth::user();
             if (!$user || !$group->hasMember($user->id)) {
                 return $this->error('无权限访问', 403);
             }
+        }
+
+        // 添加成员状态
+        if ($user) {
+            $member = $group->members()->where('user_id', $user->id)->first();
+            $group->is_member = $member ? true : false;
+            $group->member_role = $member ? $this->getRoleName($member->role) : null;
         }
 
         return $this->success($group);
@@ -373,15 +390,25 @@ class GroupController extends Controller
     {
         $user = $request->user();
         
-        $groups = $user->groupMembers()
-            ->with(['group.owner.profile', 'group.university'])
-            ->whereHas('group', function ($query) {
-                $query->where('status', 1);
-            })
-            ->orderBy('role', 'desc')
-            ->orderBy('joined_at', 'desc')
-            ->paginate($request->size ?? 20);
+        $groups = $user->groups()
+            ->with('owner.profile', 'university')
+            ->wherePivot('status', 1)
+            ->orderBy('pivot_joined_at', 'desc')
+            ->get();
 
-        return $this->paginate($groups);
+        return $this->success($groups);
+    }
+
+    // 获取角色名称
+    private function getRoleName($role)
+    {
+        switch ($role) {
+            case 2:
+                return 'owner';
+            case 1:
+                return 'admin';
+            default:
+                return 'member';
+        }
     }
 }
